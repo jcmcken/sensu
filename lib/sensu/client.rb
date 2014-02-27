@@ -74,6 +74,10 @@ module Sensu
     end
 
     def publish_result(check)
+      if !check.fetch(:publish_result, true)
+        @logger.info('not publishing check result')
+        return
+      end
       payload = {
         :client => @settings[:client][:name],
         :check => check

@@ -214,4 +214,17 @@ describe 'Sensu::Client' do
       end
     end
   end
+
+  it 'can execute a check, but not publish the result' do
+    async_wrapper do
+      result_queue do |queue|
+        @client.setup_rabbitmq
+        @client.execute_check_command(check_template.merge(:publish_result=>false))
+        queue.pop do |metadata, payload|
+          payload.should be_nil
+          async_done
+        end
+      end
+    end
+  end
 end
